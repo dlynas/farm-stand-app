@@ -15,7 +15,7 @@ docker compose up --build
 Sign up with email. Passwords must match.
 Confirmation link will be sent to your email. Click to verify, then sign in and navigate to your Vendor Dashboard. Add your address and a note to help people find your farm stand. Then, add items and quantities as you stock your farm stand. You can generate a QR code that you can print out and leave at your stand so that your customers can easily link to a page where they update the quantity of your stock remaining.
 
-### Getting Started with Create React App
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
