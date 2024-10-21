@@ -1,0 +1,21 @@
+# Environment files
+.env
+
+# Node modules
+node_modules/
+
+# Docker related
+.dockerignore
+
+# Logs and generated files
+*.log
+.DS_Store
+coverage/
+build/
+
+# Firebase related
+firebase-debug.log*
+firebase-debug.*.log*
+
+# Misc
+*.local
