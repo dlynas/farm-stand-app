@@ -5,7 +5,7 @@
 node_modules/
 
 # Docker related
-.dockerignore
+# .dockerignore
 
 # Logs and generated files
 *.log
