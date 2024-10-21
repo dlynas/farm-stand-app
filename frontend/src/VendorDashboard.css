@@ -1,0 +1,50 @@
+/* src/VendorDashboard.css */
+
+.dashboard-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    text-align: center;
+  }
+  
+  .item-form {
+    margin-bottom: 20px;
+  }
+  
+  .item-input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .add-item-button, .sign-out-button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-item-button:hover, .sign-out-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .items-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .items-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  

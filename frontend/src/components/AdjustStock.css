@@ -1,0 +1,45 @@
+/* AdjustStock.css */
+
+.adjust-stock-container {
+    padding: 20px;
+  }
+  
+  .map-container {
+    margin-bottom: 20px;
+  }
+  
+  .vendor-info {
+    margin-bottom: 20px;
+  }
+
+  .centered {
+    text-align: center;
+}
+
+.centered-stock-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.centered-stock-item {
+    width: 80%; /* Adjust to control the width of the stock item for better centering */
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+  
+  button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
