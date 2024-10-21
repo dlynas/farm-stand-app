@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
-const center = {
+const defaultCenter = {
   lat: 41.9000,
   lng: -72.0000,
 };
@@ -18,16 +18,20 @@ function Map() {
 
   const mapRef = useRef(null);
   const [vendors, setVendors] = useState([]);
+  const [userLocation, setUserLocation] = useState(null); // New state for user location
+  const [mapKey, setMapKey] = useState(Date.now()); // State to track map key for re-rendering
   const db = getFirestore();
+  const directionsPanelRef = useRef(null); // Reference for the directions panel
 
-  // Fetch vendor data from Firestore
   useEffect(() => {
+    // Fetch vendor data from Firestore
     const fetchVendors = async () => {
       try {
         const vendorCollection = collection(db, 'vendors');
         const vendorSnapshot = await getDocs(vendorCollection);
         const vendorList = vendorSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setVendors(vendorList);
+        setMapKey(Date.now()); // Update map key to force re-render
       } catch (error) {
         console.error("Error fetching vendors: ", error);
       }
@@ -37,10 +41,42 @@ function Map() {
   }, [db]);
 
   useEffect(() => {
-    if (isLoaded && mapRef.current) {
+    // Get User Location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        () => {
+          console.warn("Geolocation permission denied. Using default location.");
+          setUserLocation(defaultCenter);
+        }
+      );
+    } else {
+      console.warn("Geolocation is not supported by this browser. Using default location.");
+      setUserLocation(defaultCenter);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded && mapRef.current && userLocation) {
+      // Initialize the map, centering on user's location or default center
       const map = new window.google.maps.Map(mapRef.current, {
-        center: center,
+        center: userLocation,
         zoom: 10,
+      });
+
+      // Add User Location Marker
+      new window.google.maps.Marker({
+        position: userLocation,
+        map: map,
+        title: 'You are here',
+        icon: {
+          url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+        },
       });
 
       // Adding Markers for Each Vendor
@@ -60,6 +96,7 @@ function Map() {
             },
           });
 
+          // Info Window and Navigation Directions
           marker.addListener("click", () => {
             const infoWindow = new window.google.maps.InfoWindow({
               content: `
@@ -74,22 +111,58 @@ function Map() {
                     : '<p>No items available</p>'
                   }
                   
+                  <button id="navigateButton">Navigate Here</button>
                   <p><em>Last updated: ${vendor.lastUpdated ? new Date(vendor.lastUpdated.seconds * 1000).toLocaleString() : 'N/A'}</em></p>
                 </div>
               `,
             });
             infoWindow.open(map, marker);
+
+            // Add navigation functionality
+            window.google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+              document.getElementById("navigateButton").addEventListener("click", () => {
+                displayDirections(userLocation, { lat: vendor.location.lat, lng: vendor.location.lng }, map);
+              });
+            });
           });
         }
       });
     }
-  }, [isLoaded, vendors]);
+  }, [isLoaded, vendors, userLocation, mapKey]); // Add `mapKey` to dependencies to force reinitializing the map
+
+  // Function to display directions between user location and vendor
+  const displayDirections = (origin, destination, map) => {
+    const directionsService = new window.google.maps.DirectionsService();
+    const directionsRenderer = new window.google.maps.DirectionsRenderer({
+      suppressMarkers: false,  // Show markers for start and end locations
+      panel: directionsPanelRef.current,  // Attach the directions panel to this reference
+    });
+    directionsRenderer.setMap(map);
+
+    directionsService.route(
+      {
+        origin: origin,
+        destination: destination,
+        travelMode: window.google.maps.TravelMode.DRIVING,
+      },
+      (response, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(response);
+        } else {
+          alert("Directions request failed due to " + status);
+        }
+      }
+    );
+  };
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading Maps...</div>;
 
   return (
-    <div ref={mapRef} className="map-container"></div>
+    <div className="map-container-wrapper">
+      <div key={mapKey} ref={mapRef} className="map-container"></div>
+      <div ref={directionsPanelRef} className="directions-panel"></div> {/* Panel for turn-by-turn directions */}
+    </div>
   );
 }
 
