@@ -18,7 +18,7 @@ function Map() {
 
   const mapRef = useRef(null);
   const [vendors, setVendors] = useState([]);
-  const [userLocation, setUserLocation] = useState(null); // New state for user location
+  const [userLocation, setUserLocation] = useState(defaultCenter); // Set initial location to defaultCenter
   const [mapKey, setMapKey] = useState(Date.now()); // State to track map key for re-rendering
   const db = getFirestore();
   const directionsPanelRef = useRef(null); // Reference for the directions panel
@@ -50,18 +50,13 @@ function Map() {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
             });
-            setMapKey(Date.now()); // Update map key to force re-render
           },
           () => {
             console.warn("Geolocation permission denied. Using default location.");
-            setUserLocation(defaultCenter);
-            setMapKey(Date.now()); // Update map key to force re-render
           }
         );
       } else {
         console.warn("Geolocation is not supported by this browser. Using default location.");
-        setUserLocation(defaultCenter);
-        setMapKey(Date.now()); // Update map key to force re-render
       }
     };
 
@@ -69,7 +64,7 @@ function Map() {
   }, []);
 
   useEffect(() => {
-    if (isLoaded && mapRef.current && userLocation) {
+    if (isLoaded && mapRef.current) {
       // Initialize the map, centering on user's location or default center
       const map = new window.google.maps.Map(mapRef.current, {
         center: userLocation,
@@ -135,7 +130,7 @@ function Map() {
         }
       });
     }
-  }, [isLoaded, vendors, userLocation, mapKey]); // Add `mapKey` to dependencies to force reinitializing the map
+  }, [isLoaded, vendors, userLocation]); // Remove mapKey to avoid unnecessary reinitializing
 
   // Function to display directions between user location and vendor
   const displayDirections = (origin, destination, map) => {
@@ -167,7 +162,7 @@ function Map() {
 
   return (
     <div className="map-container-wrapper">
-      <div key={mapKey} ref={mapRef} className="map-container"></div>
+      <div ref={mapRef} className="map-container"></div>
       <div ref={directionsPanelRef} className="directions-panel"></div> {/* Panel for turn-by-turn directions */}
     </div>
   );
