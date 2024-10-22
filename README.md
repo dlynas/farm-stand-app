@@ -1,87 +1,21 @@
+# Farm Stand App - Nutmeggs
 
+I moved to the country a few years ago and I couldn't be happier. One of the reasons I love it so much out here is the community... another big reason is the abundant farm fresh food! We love being able to pick up eggs (and veggies and bread and so much more) from our neighbors’ local farm stands, but we aren’t always able to find what we’re looking for easily (or without driving around a bunch). I'm an amateur/hobbyist programmer looking for problems to tackle (and excuses to improve my skills), so I built a simple web application that I wanted to share with you all in the hopes that it might make it just a little easier for folks with farm stands to connect with folks who want farm fresh food - myself included! I called it Nutmeggs 😃
 
-# North East Connecticut Open Source Farm Stand App
+## How to use the app:
+Vendors click sign up at the top of the page, enter their farm stand name, their email and their desired password. They’ll receive an automated email with a confirmation link. After they confirm by clicking the link, they’ll be able to log in to their “Vendor Dashboard” and set the address of their farm stand (as well as a note to help people find it). Note: The vendor page will be invisible to users until the address is selected! Once you’ve saved your address, you can add names of the items you offer (Chicken/Duck Eggs, Bread/Bagels, Veggies, Flowers, etc) and how much stock is available. Finally, there is an option to generate a unique QR code that you can print out and leave at your farm stand so that people can scan it and update the stock remaining after their purchase.
+Users will be able to see vendors page on the map displayed on the main page. Green icons indicate there is some stock (of at least one item) available, red icons indicate sold out. Users will also be able to click on the icon to show address/stocked items/navigation options and vendor details page. Users will be able to adjust the stock of any item without being logged in - I figured since these generally run on the honor system, it made sense to allow people to update the stock without having to create an account or restrict only vendors to be able to update their own stock.
 
-## Install
-Using NPM and Docker. You'll need to add your Google Maps API key as well as your Firebase API and project info in a .env for local hosting or add them to your hosting service if remotely hosted.
+I would LOVE any feedback from ANYONE about this - don’t worry about hurting my feelings! As I said, I’m not a professional web developer by any means; in fact, this is my first public web application! Although I have a strong tech background, I never studied programming formally, and I relied heavily on ChatGPT for development of the app. I really just am hoping to reduce friction and increase efficiency in little ways that make our lives just a little bit easier wherever I can.
+If you have any questions, or need any help setting up an account/using the app, please comment below (or PM me) and I’d be happy to help. Additionally, you can review (and modify!) the source code on my GitHub page (github.com/dlynas/farm-stand-app). This app will be 100% free forever, and your info will always be completely private and will never be sold. I REALLY dislike how so many helpful tools are often provided for free at first (usually so that they can harvest our data) and then, once we’re locked in and depend on those tools, they start charging for them.
+That being said, if you’d like to contrive a few dollars towards the maintenance of the application (it costs a relatively small but non-zero amount to run the servers and keep the domain registered), please let me know and I’d be happy to share a donation link - no pressure! Alternatively, if you have any tech skills and you’d like to help me with development, I’d be happy for that as well. Regardless, I’d mostly love to hear how the app could be improved or any new features that would be helpful to you - or just that it's helping you out already.
+Thanks for taking the time to read this and I hope you take a few minutes to check out the application: the more people use it, the more useful it will be! Looking forward to hearing from you all.
+
+## Run your own
+Use Docker compose! You'll need to add your Google Maps API key as well as your Firebase API and project info to your .env file.
 
 Then run:
 ```
 docker compose up --build
 ```
-
-## Usage
-### Vendors
-Sign up with email. Passwords must match.
-Confirmation link will be sent to your email. Click to verify, then sign in and navigate to your Vendor Dashboard. Add your address and a note to help people find your farm stand. Then, add items and quantities as you stock your farm stand. You can generate a QR code that you can print out and leave at your stand so that your customers can easily link to a page where they update the quantity of your stock remaining.
-
-## Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-#### Available Scripts
-
-In the project directory, you can run:
-
-##### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-##### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-##### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-##### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-#### Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-##### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-##### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-##### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-##### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-##### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-##### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Have fun!
