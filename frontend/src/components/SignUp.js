@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { getFirestore, setDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import '../Auth.css';
 
@@ -12,7 +11,6 @@ function SignUp() {
   const [vendorName, setVendorName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const db = getFirestore();
   const navigate = useNavigate(); // Hook for navigation
 
   // Handle Sign Up with Email
@@ -33,14 +31,11 @@ function SignUp() {
       await sendEmailVerification(user);
       alert('Verification email sent. Please check your inbox.');
 
-      // Store vendor name in Firestore
-      await setDoc(doc(db, 'vendors', user.uid), {
-        vendorName: vendorName,
-        email: email,
-      });
+      // Log the user out to prevent unauthorized access
+      await auth.signOut();
 
-      alert('Vendor signed up successfully!');
-      navigate('/dashboard'); // Redirect to the dashboard after successful sign-up
+      // Redirect to the sign-in page after successful sign-up and logout
+      navigate('/signin');
     } catch (error) {
       console.error('Error signing up: ', error);
       alert(error.message);
