@@ -99,7 +99,7 @@ function App() {
           </ul>
         </nav>
         <Routes>
-          <Route path="/" element={<Map vendors={vendors} />} />
+          <Route path="/" element={<Map key={Date.now()} vendors={vendors} defaultCenter={true} />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route

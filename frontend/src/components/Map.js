@@ -42,23 +42,30 @@ function Map() {
 
   useEffect(() => {
     // Get User Location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        () => {
-          console.warn("Geolocation permission denied. Using default location.");
-          setUserLocation(defaultCenter);
-        }
-      );
-    } else {
-      console.warn("Geolocation is not supported by this browser. Using default location.");
-      setUserLocation(defaultCenter);
-    }
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setUserLocation({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            });
+            setMapKey(Date.now()); // Update map key to force re-render
+          },
+          () => {
+            console.warn("Geolocation permission denied. Using default location.");
+            setUserLocation(defaultCenter);
+            setMapKey(Date.now()); // Update map key to force re-render
+          }
+        );
+      } else {
+        console.warn("Geolocation is not supported by this browser. Using default location.");
+        setUserLocation(defaultCenter);
+        setMapKey(Date.now()); // Update map key to force re-render
+      }
+    };
+
+    getUserLocation();
   }, []);
 
   useEffect(() => {
