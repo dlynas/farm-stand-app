@@ -1,17 +1,18 @@
 // src/App.js
 import React, { useEffect, useState } from 'react';
+import { useLoadScript } from '@react-google-maps/api'; // Import useLoadScript for Google Maps API
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { onAuthStateChanged, signOut, RecaptchaVerifier } from 'firebase/auth';
 import { auth } from './firebase';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import GenerateQrCode from './components/GenerateQrCode'; // Import the new QR Code Component
+import GenerateQrCode from './components/GenerateQrCode';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import Map from './components/Map';
 import VendorDashboard from './components/VendorDashboard';
 import ChangePassword from './components/ChangePassword';
 import ProtectedRoute from './components/ProtectedRoute';
-import AdjustStock from './components/AdjustStock'; // <-- Added the missing import for AdjustStock
+import AdjustStock from './components/AdjustStock';
 import './App.css';
 
 function App() {
@@ -19,7 +20,12 @@ function App() {
   const [vendors, setVendors] = useState([]);
   const db = getFirestore();
 
-  // Initial Firebase Auth and Firestore Setup
+  // Centralized Google Maps API loading
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    libraries: ['places'], // Include the 'places' library for autocomplete
+  });
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -79,6 +85,9 @@ function App() {
       });
   };
 
+  if (loadError) return <div>Error loading Google Maps</div>;
+  if (!isLoaded) return <div>Loading Google Maps...</div>;
+
   return (
     <Router>
       <div className="App">
@@ -99,20 +108,20 @@ function App() {
           </ul>
         </nav>
         <Routes>
-          <Route path="/" element={<Map key={Date.now()} vendors={vendors} defaultCenter={true} />} />
+          <Route path="/" element={<Map key={Date.now()} vendors={vendors} isLoaded={isLoaded} />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute user={user}>
-                <VendorDashboard user={user} />
+                <VendorDashboard user={user} isLoaded={isLoaded} />
               </ProtectedRoute>
             }
           />
           <Route path="/adjuststock/:vendorId" element={<AdjustStock />} />
           <Route path="/changepassword" element={<ChangePassword />} />
-          <Route path="/generate-qrcode/:vendorId" element={<GenerateQrCode />} /> {/* Make GenerateQrCode available to everyone */}
+          <Route path="/generate-qrcode/:vendorId" element={<GenerateQrCode />} />
         </Routes>
         <div id="recaptcha-container"></div> {/* Ensure this div is globally accessible */}
       </div>

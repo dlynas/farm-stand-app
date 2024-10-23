@@ -1,6 +1,7 @@
 // src/firebase.js
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, setPersistence, browserSessionPersistence } from 'firebase/auth';  // Added setPersistence
+import { getFirestore, setLogLevel } from 'firebase/firestore'; // Import Firestore
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -17,3 +18,14 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication
 export const auth = getAuth(app);
+
+// Ensure session persistence
+setPersistence(auth, browserSessionPersistence).catch((error) => {
+    console.error('Error setting persistence: ', error);
+});
+
+// Initialize Firestore
+export const db = getFirestore(app);
+
+// Enable Firestore Debug Logging
+setLogLevel('debug');

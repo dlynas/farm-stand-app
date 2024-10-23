@@ -7,10 +7,21 @@ import './AdjustStock.css';
 
 const LIBRARIES = ['places'];
 
+// Utility function to convert 24-hour time to 12-hour AM/PM format
+function convertTo12Hour(timeString) {
+  if (!timeString) return 'Open'; // Handle empty or undefined values
+  const [hours, minutes] = timeString.split(':');
+  let hour = parseInt(hours, 10);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12 || 12; // Convert 24hr to 12hr, handling 0 as 12 AM
+  return `${hour}:${minutes} ${ampm}`;
+}
+
 function AdjustStock() {
   const { vendorId } = useParams();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [vendorHours, setVendorHours] = useState(null);
   const [vendorLocation, setVendorLocation] = useState(null);
   const [vendorName, setVendorName] = useState('');
   const [vendorAddress, setVendorAddress] = useState('');
@@ -38,6 +49,7 @@ function AdjustStock() {
           setVendorName(vendorData.vendorName || '');
           setVendorAddress(vendorData.location?.address || '');
           setVendorNote(vendorData.location?.note || '');
+          setVendorHours(vendorData.hours || null);
         } else {
           console.error('Vendor not found');
         }
@@ -95,7 +107,6 @@ function AdjustStock() {
     }
   };
 
-
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading Maps...</div>;
 
@@ -107,9 +118,11 @@ function AdjustStock() {
         <>
           <div className="vendor-details">
             <h2>{vendorName}'s Farm Stand</h2>
+            <hr />
             <p><strong>Address:</strong> {vendorAddress}</p>
             {vendorNote && <p><strong>Note:</strong> {vendorNote}</p>}
           </div>
+          <hr />
           <div className="current-stock">
             <h3>Current Stock</h3>
             <div className="stock-list-container centered">
@@ -121,6 +134,10 @@ function AdjustStock() {
                     <li key={index} className="stock-item centered-stock-item">
                       <div className="item-info">
                         <span className="item-name" style={{ marginRight: '10px', fontWeight: 'bold' }}>Item: {item.name}</span>
+                        <span className="item-price" style={{ marginRight: '10px' }}>Price: $ {item.price?.toFixed(2)}</span>
+                        {item.pricePerDozen !== null && (
+                          <span className="item-price-per-dozen" style={{ marginRight: '10px' }}>Price per Dozen: $ {item.pricePerDozen?.toFixed(2)}</span>
+                        )}
                         <label htmlFor={`quantity-${index}`} style={{ marginRight: '10px' }}>Quantity available:</label>
                         <input
                           type="number"
@@ -137,6 +154,30 @@ function AdjustStock() {
               )}
             </div>
           </div>
+          <hr />
+          <div className="vendor-hours" style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <h3>Hours of Operation</h3>
+            {vendorHours ? (
+              <table className="hours-table" style={{ margin: '0 auto', textAlign: 'left', borderCollapse: 'separate', borderSpacing: '0 10px' }}>
+                <tbody>
+                  {['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun'].map((day) => (
+                    <tr key={day}>
+                      <td style={{ paddingRight: '20px' }}>{day}</td>
+                      <td style={{ paddingRight: '20px' }}>
+                        {vendorHours[day].closed ? 'Closed' : convertTo12Hour(vendorHours[day].open)}
+                      </td>
+                      <td>
+                        {vendorHours[day].closed ? 'Closed' : convertTo12Hour(vendorHours[day].close)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>Hours of operation are not available.</p>
+            )}
+          </div>
+          <hr />
           <div ref={mapRef} className="map-container"></div>
         </>
       )}

@@ -19,7 +19,7 @@ function Map() {
   const mapRef = useRef(null);
   const [vendors, setVendors] = useState([]);
   const [userLocation, setUserLocation] = useState(defaultCenter); // Set initial location to defaultCenter
-  const [mapKey, setMapKey] = useState(Date.now()); // State to track map key for re-rendering
+  // const [mapKey, setMapKey] = useState(Date.now()); // State to track map key for re-rendering
   const db = getFirestore();
   const directionsPanelRef = useRef(null); // Reference for the directions panel
 
@@ -31,7 +31,7 @@ function Map() {
         const vendorSnapshot = await getDocs(vendorCollection);
         const vendorList = vendorSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setVendors(vendorList);
-        setMapKey(Date.now()); // Update map key to force re-render
+        // setMapKey(Date.now()); // Update map key to force re-render
       } catch (error) {
         console.error("Error fetching vendors: ", error);
       }
